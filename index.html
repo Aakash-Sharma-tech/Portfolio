@@ -46,6 +46,12 @@
       overflow-x: hidden;
       cursor: none;
     }
+    
+    /* === VUE FOUC FIX: Hides raw templates until Vue is ready === */
+    [v-cloak] {
+      display: none;
+    }
+    /* ========================================================== */
 
     /* Custom Cursor Styles */
     .custom-cursor {
@@ -346,47 +352,72 @@
       .canvas-container {
         display: none;
       }
+      
+      /* Mobile Nav Menu Styling */
+      .nav-links-container {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        padding-top: 10px;
+      }
+      
+      .nav-links-container.active {
+        display: flex;
+      }
+      
+      .nav-links-container li {
+        margin: 10px 0;
+      }
+      
+      /* Scale down hero text on mobile */
+      #hero h1 {
+        font-size: 4rem; /* Custom override for huge text */
+      }
+
+      #hero p {
+        font-size: 1.25rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="app">
+  <div id="app" v-cloak>
     <!-- Custom Cursor Elements -->
     <div class="custom-cursor" ref="cursor"></div>
     <div class="custom-cursor-trail" ref="cursorTrail"></div>
 
     <!-- Navigation Bar -->
     <nav class="fixed top-0 left-0 w-full z-50 bg-opacity-90 backdrop-blur-md" style="background-color: rgba(10, 10, 15, 0.9);">
-      <div class="container mx-auto px-6 py-4">
-      <div class="flex justify-between items-center">
+      <div class="container mx-auto px-6 py-4 flex flex-wrap justify-between items-center">
         <div class="text-2xl font-bold" style="font-family: 'Fira Code', monospace; color: var(--color-accent);">
-        &lt;AS/&gt;
+          &lt;AS/&gt;
         </div>
+        
+        <!-- Mobile Menu Button -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-2xl" style="color: var(--color-accent);">
+          <i :class="mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
+        </button>
+
         <!-- Desktop Navigation -->
         <ul class="hidden md:flex space-x-8">
-        <li><a href="#hero" class="nav-link hover:text-cyan-400">Home</a></li>
-        <li><a href="#about" class="nav-link hover:text-cyan-400">About</a></li>
-        <li><a href="#experience" class="nav-link hover:text-cyan-400">Experience</a></li>
-        <li><a href="#skills" class="nav-link hover:text-cyan-400">Skills</a></li>
-        <li><a href="#projects" class="nav-link hover:text-cyan-400">Projects</a></li>
-        <li><a href="#contact" class="nav-link hover:text-cyan-400">Contact</a></li>
+          <li><a href="#hero" class="nav-link hover:text-cyan-400">Home</a></li>
+          <li><a href="#about" class="nav-link hover:text-cyan-400">About</a></li>
+          <li><a href="#experience" class="nav-link hover:text-cyan-400">Experience</a></li>
+          <li><a href="#skills" class="nav-link hover:text-cyan-400">Skills</a></li>
+          <li><a href="#projects" class="nav-link hover:text-cyan-400">Projects</a></li>
+          <li><a href="#contact" class="nav-link hover:text-cyan-400">Contact</a></li>
         </ul>
 
-        <!-- Mobile Menu Button -->
-        <button class="md:hidden text-2xl" style="color: var(--color-accent);" @click="mobileMenuOpen = !mobileMenuOpen">
-        <i :class="mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
-        </button>
-      </div>
-
-      <!-- Mobile Navigation -->
-      <ul v-if="mobileMenuOpen" class="md:hidden flex flex-col space-y-4 mt-4 pb-4">
-        <li><a href="#hero" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Home</a></li>
-        <li><a href="#about" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">About</a></li>
-        <li><a href="#experience" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Experience</a></li>
-        <li><a href="#skills" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Skills</a></li>
-        <li><a href="#projects" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Projects</a></li>
-        <li><a href="#contact" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Contact</a></li>
-      </ul>
+        <!-- Mobile Navigation -->
+        <ul v-if="mobileMenuOpen" class="md:hidden flex flex-col space-y-4 mt-4 pb-4 w-full">
+          <li><a href="#hero" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Home</a></li>
+          <li><a href="#about" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">About</a></li>
+          <li><a href="#experience" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Experience</a></li>
+          <li><a href="#skills" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Skills</a></li>
+          <li><a href="#projects" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Projects</a></li>
+          <li><a href="#contact" class="nav-link hover:text-cyan-400 block" @click="mobileMenuOpen = false">Contact</a></li>
+        </ul>
       </div>
     </nav>
 
@@ -433,7 +464,7 @@
         <h2 class="text-5xl md:text-6xl font-bold mb-12 text-center glitch"
             data-text="ABOUT ME"
             ref="aboutTitle">
-             ABOUT ME
+          ABOUT ME
         </h2>
 
         <div class="grid md:grid-cols-3 gap-12 items-center">
@@ -540,7 +571,7 @@
         <h2 class="text-5xl md:text-6xl font-bold mb-12 text-center glitch"
             data-text="SKILLS MATRIX"
             ref="skillsTitle">
-           SKILLS MATRIX
+          SKILLS MATRIX
         </h2>
 
         <div class="grid md:grid-cols-2 gap-12">
@@ -635,18 +666,18 @@
           <!-- Contact Form -->
           <div>
             <!--
-              NOTE: To integrate a seamless backend email service (recommended),
-              change the <form> action below to a service endpoint like Web3Forms or Formspree.
-              Example: <form method="POST" action="https://web3forms.com/f/your-form-id">
-              The handleSubmit Vue method is now modified to use a mailto: link, which opens the user's
-              default email client to send the message to the specified email address.
+              The form is updated to handle asynchronous submission via the Vue method.
+              It includes the Web3Forms access key.
             -->
             <form @submit.prevent="handleSubmit" class="space-y-6">
-              <!-- <input type="hidden" name="access_key" value="0117b6f1-efe6-4523-9072-e9ed16d361cb"> -->
+              <!-- Web3Forms Access Key (Provided by user) -->
+              <input type="hidden" name="access_key" value="0117b6f1-efe6-4523-9072-e9ed16d361cb">
+
               <div>
                 <label class="block text-sm font-semibold mb-2" style="color: var(--color-accent);">Name</label>
                 <input
                   type="text"
+                  name="name"
                   v-model="form.name"
                   class="input-field w-full px-4 py-3 rounded-lg"
                   placeholder="Your Name"
@@ -656,6 +687,7 @@
                 <label class="block text-sm font-semibold mb-2" style="color: var(--color-accent);">Email</label>
                 <input
                   type="email"
+                  name="email"
                   v-model="form.email"
                   class="input-field w-full px-4 py-3 rounded-lg"
                   placeholder="your.email@example.com"
@@ -688,6 +720,7 @@
               <div>
                 <label class="block text-sm font-semibold mb-2" style="color: var(--color-accent);">Message</label>
                 <textarea
+                  name="message"
                   v-model="form.message"
                   class="input-field w-full px-4 py-3 rounded-lg h-32 resize-none"
                   placeholder="Your message..."
@@ -698,7 +731,8 @@
                 :disabled="isSubmitting"
                 class="w-full py-3 rounded-lg font-bold transition-all duration-300 hover:shadow-lg disabled:opacity-50"
                 style="background: linear-gradient(90deg, var(--color-accent), var(--color-accent-secondary)); color: var(--color-bg);">
-                <i class="fas fa-paper-plane mr-2"></i>{{ isSubmitting ? 'Opening Mail Client...' : 'Send Message' }}
+                <i :class="isSubmitting ? 'fas fa-spinner fa-spin' : 'fas fa-paper-plane'" class="mr-2"></i>
+                {{ isSubmitting ? 'Sending...' : 'Send Message' }}
               </button>
             </form>
 
@@ -708,12 +742,10 @@
                  :style="`background-color: ${formMessage.type === 'success' ? 'rgba(0, 240, 100, 0.1)' : 'rgba(255, 0, 110, 0.1)'}; border: 1px solid ${formMessage.type === 'success' ? 'var(--color-accent)' : 'var(--color-accent-secondary)'}`">
               {{ formMessage.text }}
             </div>
-            
-            <!-- Removed User ID Display as we are no longer using Firestore -->
           </div>
 
           <!-- Social Links -->
-          <div class="flex flex-col justify-center space-y-6">
+          <div class="flex flex-col justify-center space-y-6 mt-12 md:mt-0">
             <h3 class="text-3xl font-bold mb-4" style="color: var(--color-accent);">
               Connect With Me
             </h3>
@@ -738,15 +770,15 @@
               </div>
             </a>
             <a id="contact-email-link"
-               href="mailto:aakash.sharma.cse@gmail.com"
+               :href="`mailto:${targetEmail}`"
                class="flex items-center space-x-4 p-4 rounded-lg transition-all hover:translate-x-2"
                style="background-color: var(--color-bg); border: 1px solid var(--color-accent-secondary);">
               <i class="fas fa-envelope text-3xl" style="color: var(--color-accent-secondary);"></i>
               <div>
                 <div class="font-bold">Email</div>
-                <div class="text-sm text-gray-400">aakash.sharma.cse@gmail.com</div>
+                <div class="text-sm text-gray-400">{{ targetEmail }}</div>
               </div>
-            </a> 
+            </a>
             <a href="https://wa.me/918989607974"
                target="_blank"
                class="flex items-center space-x-4 p-4 rounded-lg transition-all hover:translate-x-2"
@@ -863,22 +895,20 @@
     import { createApp, ref, reactive } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
     
     // NOTE: Removed Firebase imports and initialization since the user requested direct email instead of database storage.
-        // API Key from environment
     const apiKey = ""; 
 
     createApp({
       data() {
         return {
-          // --- Removed Firestore/Auth State ---
           isSubmitting: false,
           mobileMenuOpen: false,
           
-           // AI States
+          // AI States
           aiDraftTopic: '',
           aiDrafting: false,
           projectExplanation: '',
           aiExplaining: false,
-
+          
           // Education Data (rest of your data remains the same)
           education: [
             {
@@ -928,7 +958,7 @@
               ]
             },
             {
-              id: 2,
+              id: 3,
               position: 'Data Analysis Trainee',
               company: 'YBI Foundation',
               period: 'Aug 2023-Sep 2023',
@@ -1016,7 +1046,7 @@
               title: 'KrishiMitra',
               shortDesc: 'AI-powered agriculture assistant for farmers',
               fullDesc: 'KrishiMitra is an AI-powered agriculture assistant designed to help farmers optimize crop yield and manage farm operations efficiently. The platform facilitates crop disease detection through image analysis, provides personalized farming recommendations via Chatbot with multilingual support and also provide the analysis using 2D and 3D data visualizations.',
-                icon: 'fas fa-seedling',
+              icon: 'fas fa-seedling',
               tech: ['Flask','HTML', 'CSS', 'JavaScript','Jinja2', 'Bootstrap','Chart.js','PostgreSQL','Plotly','Numpy','Pandas','TensorFlow','Gemini','HuggingFace'],
               features: [
                 'Crop disease detection using image analysis',
@@ -1052,7 +1082,7 @@
                 { label: 'Registrations Handled', value: '600+' },
                 { label: 'Event Duration', value: '12 Days' },
                 { label: 'User Satisfaction', value: '95%' },
-               
+                
               ],
               github: 'https://github.com/Aakash-Sharma-tech/techblitz',
               demo: 'https://techblitz-by-cosmos.netlify.app/'
@@ -1140,7 +1170,7 @@
                 { label: 'Dataset Size', value: '25,000+' },
                 { label: 'Features Used', value: '8' },
                 { label: 'Accuracy', value: '90%' },
-              { label: 'Real-Time Detection', value: 'Yes' }
+                { label: 'Real-Time Detection', value: 'Yes' }
               ],
               github: 'https://github.com/Aakash-Sharma-tech/object-detection-mask-rcnn',
               demo: 'https://object-detection-mask-rcnn.example.com'
@@ -1242,7 +1272,16 @@
       },
 
       methods: {
-
+        // Toggle mobile menu state
+        toggleMobileMenu() {
+          this.mobileMenuOpen = !this.mobileMenuOpen;
+        },
+        
+        // Close mobile menu (used when navigating from the menu)
+        closeMobileMenu() {
+          this.mobileMenuOpen = false;
+        },
+        
         // --- Gemini API Helper ---
         async callGeminiAPI(prompt) {
           const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
@@ -1278,8 +1317,10 @@
 
         // --- Feature 1: AI Message Drafter ---
         async generateDraft() {
+          // NOTE: Changed alert() to a custom message update
           if (!this.aiDraftTopic) {
-            alert("Please enter a topic for the draft!");
+            this.formMessage = { type: 'error', text: 'Please enter a topic for the draft!' };
+            setTimeout(() => this.formMessage = null, 3000);
             return;
           }
           
@@ -1826,11 +1867,9 @@
           });
         },
 
-        // ... (rest of the script)
-
         // Handle contact form submission (UPDATED for Web3Forms)
         async handleSubmit() {
-          // Client-side validation (omitted for brevity)
+          // Client-side validation
           if (!this.form.name || !this.form.email || !this.form.message) {
             this.formMessage = {
               type: 'error',
@@ -1839,7 +1878,7 @@
             return;
           }
 
-          // Email validation (omitted for brevity)
+          // Email validation
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(this.form.email)) {
             this.formMessage = {
@@ -1914,10 +1953,8 @@
             });
           });
         }
-// ... (rest of the script)
       }
     }).mount('#app');
   </script>
 </body>
-
 </html>
